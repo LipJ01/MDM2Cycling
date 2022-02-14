@@ -5,7 +5,7 @@ forces = [40 40 40 40 40];
 Aeq = [];
 Beq = [];
 % wholeSim(forces)
-maximumForce = 80;
+maximumForce = 80; % UNIT?
 x = fmincon(@(forces) wholeSim(forces),forces, [1 1 1 1 1],200,Aeq,Beq, ones(length(forces)) * 0, ones(length(forces)) * maximumForce)
 
 function time = wholeSim(forces)

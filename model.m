@@ -1,33 +1,56 @@
 
 % Cyclist riding in stages up a mountain.
 
-forces = [400 400 400 400 400];
+stage2 = table2array(readtable('2-nice-nice.csv'));
+global gradients;
+global distances;
+gradients = stage2(:,7);
+distances = stage2(:,6);
+% length(gradients)
+maximumForce = 6000;
+global totalEnergy;
+totalEnergy = 400000;
+global resultantSpeeds
+resultantSpeeds = zeros(1,length(gradients)+1);
+global timePerStage
+timePerStage = zeros(1,length(gradients)+1);
+forces = ones(1,length(gradients))*0.8*maximumForce;
+% length(forces)
 Aeq = [];
 Beq = [];
 % wholeSim(forces)
-maximumForce = 500;
-x = fmincon(@(forces) wholeSim(forces),forces, [1 1 1 1 1],2400,Aeq,Beq, ones(length(forces)) * 0, ones(length(forces)) * maximumForce)
-
+% initalStrat = wholeSim(forces)
+options = optimoptions('fmincon','MaxFunctionEvaluations',1e+10,'PlotFcn','optimplotfval')
+% options = optimoptions('fmincon','PlotFcn','optimplotfval')
+x = fmincon(@(forces) wholeSim(forces),forces, ones(1,length(forces)),totalEnergy,Aeq,Beq, zeros(1,length(forces)), ones(1,length(forces)) * maximumForce,[],options);
+x(1:10)
 function time = wholeSim(forces)
-    distancePerStep = 100;
+    global distances;
+    global gradients;
+    distancePerStep = distances;
     massOfRiderAndBike = 70;
     resistanceConstant = 0.5;
-    thetas = [0 10 10 10 0];
-    energy = [400000 0 0 0 0 0];
-    resultantSpeeds = [0 0 0 0 0 0];
-    timePerStage = [0 0 0 0 0];
-    
+    thetas = gradients;
+    energy = ones(1,length(thetas));
+    global totalEnergy;
+    energy(1) = totalEnergy;
+    global resultantSpeeds;
+    global timePerStage;
     for i=1:length(thetas) 
 %         fprintf("step");
-        resultantSpeeds(i+1) = velocityAtNextStep(resultantSpeeds(i), distancePerStep, forces(i),thetas(i), massOfRiderAndBike, resistanceConstant);
-        energy(i+1) = energy(i) - forces(i)*distancePerStep;
+        resultantSpeeds(i+1) = velocityAtNextStep(resultantSpeeds(i), distancePerStep(i), forces(i),thetas(i), massOfRiderAndBike, resistanceConstant);
+        energy(i+1) = energy(i) - forces(i)*distancePerStep(i);
     end
 %     resultantSpeeds
     for i=1:length(thetas)
-        timePerStage(i) = timeFromVelocitys(resultantSpeeds(i),resultantSpeeds(i+1), distancePerStep);
+        timePerStage(i) = timeFromVelocitys(resultantSpeeds(i),resultantSpeeds(i+1), distancePerStep(i));
     end
 %     timePerStage
-%     energy
+%     length(distancePerStep)
+%     length(thetas)
+%     length(energy)
+%     length(resultantSpeeds)
+%     length(timePerStage)
     time = sum(timePerStage);
 end
 function time = timeFromVelocitys(initalVelocity, finalVelocity, stepDistance)
@@ -39,6 +62,7 @@ function acceleration = accelerationGivenForceAndGradient (force, theta, mass, i
 end
 
 function velocity = velocityAtNextStep (initalVelocity, stepDistance, force, theta, mass, resistance)
-    velocity = sqrt(initalVelocity^2 + 2*accelerationGivenForceAndGradient(force, theta, mass, initalVelocity, resistance)*stepDistance);
+    squareVel = initalVelocity^2 + 2*accelerationGivenForceAndGradient(force, theta, mass, initalVelocity, resistance)*stepDistance;
+    velocity = sqrt(max(squareVel,0.1)); % deal with when rider comes to a holt during iterations
 end
 
