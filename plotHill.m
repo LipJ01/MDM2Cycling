@@ -1,5 +1,8 @@
-thetas = (pi/180) * [0,5,10,15,20];
-distancePerStep = 50;
+function hill=plotHill(thetas,distancePerStep)
+
+%thetas is a vector of the angles for the different sections of the hill,
+%and distancePerStep is a distance in metres
+
 grads = tan(thetas);
 
 x=zeros(size(thetas));
@@ -15,3 +18,5 @@ for i=1:length(thetas)
 end
 
 plot(x,y)
+
+end
