@@ -53,8 +53,8 @@ x = fmincon(@(forces) wholeSimNoGlob(forces, distances, gradients),initialForces
 
 function time = wholeSimNoGlob(forces, dists, grads)
     global RForces;
-    massOfRiderAndBike = 70;
-    resistanceConstant = 0.05;
+    massOfRiderAndBike = 69.8; % kg 
+    resistanceConstant = 0.05; % 0.5*(air density)*(drag coefficient)*(frontal area of cyclist) , kg m-1
     
     speeds = zeros(1,length(grads)+1);
     times = zeros(1,length(grads)+1);
@@ -70,18 +70,18 @@ function time = wholeSimNoGlob(forces, dists, grads)
     time = sum(times);
 end
 
-function time = timeFromVelocitys(initalVelocity, finalVelocity, stepDistance)
+function time = timeFromVelocitys(initalVelocity, finalVelocity, stepDistance) % output in s
     time = (2*stepDistance)/(initalVelocity+finalVelocity);
 end
 
-function acceleration = accelerationGivenForceAndGradient (force, theta, mass, initalVelocity, resistance)
+function acceleration = accelerationGivenForceAndGradient (force, theta, mass, initalVelocity, resistance) % output in m s-2
     global RForces;
-    resultantForce = (force - sin(theta)*mass*9.81 - initalVelocity^2*resistance);
+    resultantForce = (force - sin(theta)*mass*9.81 - initalVelocity^2*resistance); % N
     RForces(end+1) = resultantForce;
-    acceleration = resultantForce/mass;
+    acceleration = resultantForce/mass; 
 end
 
-function velocity = velocityAtNextStep (initalVelocity, stepDistance, force, theta, mass, resistance)
+function velocity = velocityAtNextStep (initalVelocity, stepDistance, force, theta, mass, resistance) % output in m s-1
     squareVel = initalVelocity^2 + 2*accelerationGivenForceAndGradient(force, theta, mass, initalVelocity, resistance)*stepDistance;
-    velocity = sqrt(squareVel); % deal with when rider comes to a holt during iterations
+    velocity = sqrt(squareVel); % deal with when rider comes to a halt during iterations
 end
