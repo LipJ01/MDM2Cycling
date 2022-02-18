@@ -1,9 +1,7 @@
-function hill=plotHill(thetas,distancePerStep)
+function plotHill(thetas,distancePerStep)
 
 %thetas is a vector of the angles for the different sections of the hill,
 %and distancePerStep is a distance in metres
-
-grads = tan(thetas);
 
 x=zeros(size(thetas));
 
