@@ -3,13 +3,14 @@ function [x,y,gradients,distances]=plotHill2%(gradients,distances)
 %thetas is a vector of the angles for the different sections of the hill,
 %and distancePerStep is a distance in metres
 
-stage2 = table2array(readtable('2-nice-nice.csv'));
+stage = table2array(readtable('stage15.csv'));
 global gradients;
 global distances;
-gradients = stage2(:,7);
-distances = stage2(:,6);
+gradients = stage(2:end,7);
+distances = stage(2:end,6);
 
-thetas = gradients*(pi/200);
+%thetas = gradients*(pi/200);
+thetas = gradients;
 
 x=zeros(size(thetas));
 
@@ -23,7 +24,16 @@ for i=1:length(thetas)
     y(i+1)=y(i)+distances(i)*sin(thetas(i));
 end
 
-plot(x,y)
+y=y+stage(1,4);
 
+plot(x,y, 'Linewidth', 2)
+
+set(gca,'TickLabelInterpreter','latex') 
+
+xlabel('Horizontal Distance Along Course (m)', 'Interpreter', 'latex');
+ylabel('Elevation (m)', 'Interpreter', 'latex');
+title('Elevation Profile of *INSERT STAGE NAME*', 'Interpreter', 'latex');
+
+grid on
 
 end
