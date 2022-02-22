@@ -32,7 +32,7 @@ set(gca,'TickLabelInterpreter','latex')
 
 xlabel('Horizontal Distance Along Course (m)', 'Interpreter', 'latex');
 ylabel('Elevation (m)', 'Interpreter', 'latex');
-title('Elevation Profile of *INSERT STAGE NAME*', 'Interpreter', 'latex');
+title('Elevation Profile of the "Grand Colombier", 2020 Stage 15', 'Interpreter', 'latex');
 
 grid on
 
