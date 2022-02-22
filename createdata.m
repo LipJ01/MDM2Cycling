@@ -3,7 +3,7 @@ gradsPercent = [];
 cumuDist = 0;
 stepDist = 0;
 lastElevation = stage15(1,4);
-distancePerStep = 500;
+distancePerStep = 1000;
 % For every point in the data of the stage
 for i = 1:length(stage15) 
 %     record how long the rider has had to go.

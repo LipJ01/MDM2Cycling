@@ -3,7 +3,7 @@ resistanceConstant = 0.19;
 averageRiderPower = 325;
 gradients = gradsRad;
 distances = ones(1,length(gradients)) * 1000;
-%guessPowers = averageRiderPower.*rand(length(gradients),1);
+guessPowers = averageRiderPower.*rand(length(gradients),1);
 
 guessPowers = averageRiderPower.*ones(length(gradients),1);
 
